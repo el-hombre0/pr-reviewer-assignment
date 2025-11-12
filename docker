@@ -1,0 +1,1 @@
+docker run -d   --name pr-reviewer   -e POSTGRES_DB=pr_review_db   -e POSTGRES_USER=postgres   -e POSTGRES_PASSWORD=password   -p 15432:5432   postgres:latest
