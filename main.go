@@ -2,6 +2,8 @@ package main
 
 import (
 	"log"
+	"net/http"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 	"gorm.io/gorm"
@@ -30,11 +32,36 @@ type PullRequest struct {
 	status 				string	`json: "status"`
 }
 
+func (r *Repository) CreatePR(context *fiber.Ctx) error{
+	pr := PullRequest{}
+
+	err := context.BodyParser(&pr)
+
+	if err != nil{
+		log.Fatal("En error occured while creating pull request")
+		context.Status(http.StatusUnprocessableEntity).JSON(
+			&fiber.Map{"message": "En error occured while processing request!"},
+		)
+		return err
+	}
+
+	err = r.DB.Create(&pr).Error
+
+	if err != nil {
+		context.Status(http.StatusBadRequest).JSON(
+			&fiber.Map{"message": "En error occured while creating pull request!"},)
+	}
+
+	context.Status(http.StatusOK).JSON(
+			&fiber.Map{"message": "Pull request created successfully!"},)
+	return nil
+}
+
 func (r *Repository) SetupRoutes(app *fiber.App){
 	api := app.Group("/api")
 	api.Post("/pullRequest/create", r.CreatePR)
-	api.Post("/pullRequest/merge", r.MergePR)
-	api.Post("/pullRequest/reassign", r.ReassignPR)
+	// api.Post("/pullRequest/merge", r.MergePR)
+	// api.Post("/pullRequest/reassign", r.ReassignPR)
 }
 
 func main(){
