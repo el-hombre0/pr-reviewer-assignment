@@ -1,7 +1,7 @@
-package internal.models
+package models
 
 import (
-	"time",
+	"time"
 	"gorm.io/gorm"
 )
 
@@ -43,42 +43,42 @@ const (
 )
 
 // PullRequest основная модель Pull Request
-type PullRequests struct {
-	PullRequestID     uint              `gorm:"primary key;autoIncrement" json:"pull_request_id"`
-	PullRequestName   string              `json:"pull_request_name"`
-	AuthorID          string              `json:"author_id"`
-	Status            PullRequestStatus   `json:"status"`
-	AssignedReviewers []string            `json:"assigned_reviewers"`
-	CreatedAt         *time.Time          `json:"createdAt,omitempty"`
-	MergedAt          *time.Time          `json:"mergedAt,omitempty"`
+type PullRequest struct {
+	PullRequestID     uint              	`gorm:"primary key;autoIncrement" json:"pull_request_id"`
+	PullRequestName   string              	`json:"pull_request_name"`
+	AuthorID          string              	`json:"author_id"`
+	Status            PullRequestStatus   	`json:"status"`
+	AssignedReviewers []string            	`gorm:"type:text" json:"assigned_reviewers"`
+	CreatedAt         *time.Time          	`json:"createdAt,omitempty"`
+	MergedAt          *time.Time          	`json:"mergedAt,omitempty"`
 }
 
 // CreatePullRequestRequest DTO для создания Pull Request
-type CreatePullRequestRequest struct {
-	PullRequestName   string   `json:"pull_request_name" validate:"required,min=1,max=255"`
-	AuthorID          string   `json:"author_id" validate:"required,uuid"`
-	AssignedReviewers []string `json:"assigned_reviewers" validate:"max=2"`
-}
+// type CreatePullRequestRequest struct {
+// 	PullRequestName   string   	`json:"pull_request_name" validate:"required,min=1,max=255"`
+// 	AuthorID          string   	`json:"author_id" validate:"required,uuid"`
+// 	AssignedReviewers []string `json:"assigned_reviewers" validate:"max=2"`
+// }
 
-// UpdatePullRequestRequest DTO для обновления Pull Request
-type UpdatePullRequestRequest struct {
-	PullRequestName   string            `json:"pull_request_name,omitempty" validate:"omitempty,min=1,max=255"`
-	Status            PullRequestStatus `json:"status,omitempty" validate:"omitempty,oneof=OPEN MERGED"`
-	AssignedReviewers []string          `json:"assigned_reviewers,omitempty" validate:"omitempty,max=2"`
-}
+// // UpdatePullRequestRequest DTO для обновления Pull Request
+// type UpdatePullRequestRequest struct {
+// 	PullRequestName   string            	`json:"pull_request_name,omitempty" validate:"omitempty,min=1,max=255"`
+// 	Status            PullRequestStatus 	`json:"status,omitempty" validate:"omitempty,oneof=OPEN MERGED"`
+// 	AssignedReviewers []string          	`json:"assigned_reviewers,omitempty" validate:"omitempty,max=2"`
+// }
 
-// PullRequestResponse DTO для ответа API
-type PullRequestResponse struct {
-	PullRequestID     string            `json:"pull_request_id"`
-	PullRequestName   string            `json:"pull_request_name"`
-	AuthorID          string            `json:"author_id"`
-	Status            PullRequestStatus `json:"status"`
-	AssignedReviewers []string          `json:"assigned_reviewers"`
-	CreatedAt         *time.Time        `json:"createdAt,omitempty"`
-	MergedAt          *time.Time        `json:"mergedAt,omitempty"`
-}
+// // PullRequestResponse DTO для ответа API
+// type PullRequestResponse struct {
+// 	PullRequestID     string            	`json:"pull_request_id"`
+// 	PullRequestName   string            	`json:"pull_request_name"`
+// 	AuthorID          string            	`json:"author_id"`
+// 	Status            PullRequestStatus 	`json:"status"`
+// 	AssignedReviewers []string          	`json:"assigned_reviewers"`
+// 	CreatedAt         *time.Time        	`json:"createdAt,omitempty"`
+// 	MergedAt          *time.Time        	`json:"mergedAt,omitempty"`
+// }
 
-func MigratePullRequests(db *grom.DB) error{
-	err := db.AutoMigrate(&PullRequests)
+func MigratePullRequest(db *gorm.DB) error{
+	err := db.AutoMigrate(&PullRequest{})
 	return err
 }

@@ -1,4 +1,4 @@
-package internal.models
+package models
 /*
 User:
       type: object
@@ -21,10 +21,10 @@ type Users struct {
 	UserID uint			`gorm:"primary key;autoIncrement" json:"user_id"`
 	Username string		`json:"username"`
 	TeamName string 	`json:"team_name"`
-	IsActive boolean	`json:"is_active"`
+	IsActive bool		`json:"is_active"`
 }
 
-func MigrateUsers(db *grom.DB) error{
-	err := db.AutoMigrate(&Users)
+func MigrateUsers(db *gorm.DB) error{
+	err := db.AutoMigrate(&Users{})
 	return err
 }
