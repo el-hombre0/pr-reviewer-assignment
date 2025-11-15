@@ -16,7 +16,7 @@ func CreatePullRequest(c *fiber.Ctx) error{
 	if err != nil {
 		return err
 	}
-	
+
 	d := &dal.PullRequest{
 		PullRequestID: b.PullRequestID,
 		PullRequestName: b.PullRequestName,
@@ -25,6 +25,10 @@ func CreatePullRequest(c *fiber.Ctx) error{
 		AssignedReviewers: AssignReviewers(),
 		CreatedAt: time.Now(),
 		MergedAt: time.Time{},
+	}
+
+	if err := dal.CreatePullRequest(d).Error; err != nil {
+		return fiber.NewError(fiber.StatusConflict, err.Error())
 	}
 
 	return c.JSON(

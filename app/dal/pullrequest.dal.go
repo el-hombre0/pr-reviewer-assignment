@@ -5,6 +5,7 @@ import (
 
 	"github.com/el-hombre0/pr-reviewer-assignment/config/database"
 	"gorm.io/gorm"
+	"github.com/lib/pq"
 )
 
 
@@ -22,7 +23,7 @@ type PullRequest struct {
 	PullRequestName   string              	`json:"pull_request_name"`
 	AuthorID          string              	`json:"author_id"`
 	Status            PullRequestStatus   	`json:"status"`
-	AssignedReviewers []string            	`gorm:"type:text" json:"assigned_reviewers"`
+	AssignedReviewers pq.StringArray        `gorm:"type:text[]" json:"assigned_reviewers"`
 	CreatedAt         time.Time          	`json:"createdAt,omitempty"`
 	MergedAt          time.Time          	`json:"mergedAt,omitempty"`
 }
