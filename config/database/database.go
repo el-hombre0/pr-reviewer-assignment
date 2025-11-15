@@ -16,6 +16,8 @@ type Config struct {
 	SSLMode		string
 }
 
+var DB *gorm.DB
+
 func NewConnection(config *Config)(*gorm.DB, error){
 	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
@@ -27,5 +29,10 @@ func NewConnection(config *Config)(*gorm.DB, error){
 		log.Fatal("An error occured while establishing a connection with the database!")
 		return db, err
 	}
+	DB = db
 	return db, nil
+}
+
+func Migrate(tables ...interface{}) error{
+	return DB.AutoMigrate(tables...)
 }

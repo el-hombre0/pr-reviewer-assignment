@@ -6,7 +6,9 @@ import (
 	"net/http"
 	"os"
 
-	storage "github.com/el-hombre0/pr-reviewer-assignment/storage/database"
+	"github.com/el-hombre0/pr-reviewer-assignment/app/dal"
+	"github.com/el-hombre0/pr-reviewer-assignment/app/routes"
+	"github.com/el-hombre0/pr-reviewer-assignment/config/database"
 	models "github.com/el-hombre0/pr-reviewer-assignment/internal/models"
 
 	"github.com/gofiber/fiber/v2"
@@ -18,24 +20,6 @@ type Repository struct {
 	DB *gorm.DB
 }
 
-// type status string
-
-// const (
-// 	StateOpen status = iota
-// 	StateMerged
-// )
-
-// var statusName = map[status]string{
-// 	StateOpen: "OPEN",
-// 	StateMerged: "MERGED",
-// }
-
-// type PullRequest struct {
-// 	pull_request_id 	string	`json: "pull_request_id"`
-// 	pull_request_name 	string	`json: "pull_request_name"`
-// 	author_id 			string	`json: "author_id"`
-// 	status 				string	`json: "status"`
-// }
 
 func (r *Repository) CreatePR(context *fiber.Ctx) error{
 	pr := models.PullRequest{}
@@ -114,17 +98,8 @@ func (r *Repository) GetTeamByTeamName(context *fiber.Ctx) error{
 		&fiber.Map{"team_name": teamName, "members": teamModel},
 	)
 	return nil
-
 }
 
-func (r *Repository) SetupRoutes(app *fiber.App){
-	api := app.Group("/api/v1")
-	api.Post("/pullRequest/create", r.CreatePR)
-	// api.Post("/pullRequest/merge", r.MergePR)
-	// api.Post("/pullRequest/reassign", r.ReassignPR)
-	api.Post("/team/add", r.CreateTeam)
-	api.Get("/team/get", r.GetTeamByTeamName)
-}
 
 func main(){
 	err := godotenv.Load(".env")
@@ -132,7 +107,7 @@ func main(){
 		log.Fatal(err)
 	}
 
-	config := &storage.Config{
+	config := &database.Config{
 		Host: os.Getenv("DB_HOST"),
 		Port: os.Getenv("DB_PORT"),
 		User: os.Getenv("DB_USER"),
@@ -141,28 +116,33 @@ func main(){
 		SSLMode: os.Getenv("DB_SSLMODE"),
 	}
 
-	db, err := storage.NewConnection(config)
+	db, err := database.NewConnection(config)
 
 	if err != nil {
 		log.Fatal("Error while loading the database!")
 	}
 
-	err = models.MigratePullRequest(db)
+	err = database.Migrate(
+		db, 
+		&dal.PullRequest{},
+		&dal.TeamMember{},
+		&dal.Team{},
+		&dal.Users{},
+	)
 
 	if err != nil {
 		log.Fatal("An error occured while migrating pull requests!")
 	}
 
-	err = models.MigrateTeam(db)
-
-	if err != nil {
-		log.Fatal("An error occured while migrating teams!")
-	}
-
-	var r Repository = Repository{
-		DB: db,
-	}
 	app := fiber.New()
-	r.SetupRoutes(app)
+
+	// TODO
+	// app := fiber.New(fiber.Config{
+	// 	ErrorHandler: utils.ErrorHandler,
+	// })
+
+	routes.PullRequestRoutes(app)
+	routes.TeamRoutes(app)
+	routes.UsersRoutes(app)
 	app.Listen(":8080")
 }
