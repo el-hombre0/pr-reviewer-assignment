@@ -18,13 +18,13 @@ const (
 
 // PullRequest основная модель Pull Request
 type PullRequest struct {
-	PullRequestID     uint              	`gorm:"primary key;autoIncrement" json:"pull_request_id"`
+	PullRequestID     string              	`json:"pull_request_id"`
 	PullRequestName   string              	`json:"pull_request_name"`
 	AuthorID          string              	`json:"author_id"`
 	Status            PullRequestStatus   	`json:"status"`
 	AssignedReviewers []string            	`gorm:"type:text" json:"assigned_reviewers"`
-	CreatedAt         *time.Time          	`json:"createdAt,omitempty"`
-	MergedAt          *time.Time          	`json:"mergedAt,omitempty"`
+	CreatedAt         time.Time          	`json:"createdAt,omitempty"`
+	MergedAt          time.Time          	`json:"mergedAt,omitempty"`
 }
 
 func CreatePullRequest(pr *PullRequest) *gorm.DB{

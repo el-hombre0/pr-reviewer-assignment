@@ -1,104 +1,100 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/el-hombre0/pr-reviewer-assignment/app/dal"
 	"github.com/el-hombre0/pr-reviewer-assignment/app/routes"
 	"github.com/el-hombre0/pr-reviewer-assignment/config/database"
-	models "github.com/el-hombre0/pr-reviewer-assignment/internal/models"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
-	"gorm.io/gorm"
 )
 
-type Repository struct {
-	DB *gorm.DB
-}
+// type Repository struct {
+// 	DB *gorm.DB
+// }
 
 
-func (r *Repository) CreatePR(context *fiber.Ctx) error{
-	pr := models.PullRequest{}
+// func (r *Repository) CreatePR(context *fiber.Ctx) error{
+// 	pr := models.PullRequest{}
 
-	err := context.BodyParser(&pr)
+// 	err := context.BodyParser(&pr)
 
-	if err != nil{
-		log.Fatal("En error occured while parsing pull request")
-		context.Status(http.StatusUnprocessableEntity).JSON(
-			&fiber.Map{"message": "En error occured while processing request!"},
-		)
-		return err
-	}
+// 	if err != nil{
+// 		log.Fatal("En error occured while parsing pull request")
+// 		context.Status(http.StatusUnprocessableEntity).JSON(
+// 			&fiber.Map{"message": "En error occured while processing request!"},
+// 		)
+// 		return err
+// 	}
 
-	err = r.DB.Create(&pr).Error
+// 	err = r.DB.Create(&pr).Error
 
-	if err != nil {
-		context.Status(http.StatusBadRequest).JSON(
-			&fiber.Map{"message": "En error occured while creating pull request!"},)
-	}
+// 	if err != nil {
+// 		context.Status(http.StatusBadRequest).JSON(
+// 			&fiber.Map{"message": "En error occured while creating pull request!"},)
+// 	}
 
-	context.Status(http.StatusOK).JSON(
-			&fiber.Map{"message": "Pull request created successfully!"},)
-	return nil
-}
+// 	context.Status(http.StatusOK).JSON(
+// 			&fiber.Map{"message": "Pull request created successfully!"},)
+// 	return nil
+// }
 
-func (r *Repository)CreateTeam(context *fiber.Ctx) error{
-	team := models.Team{}
+// func (r *Repository)CreateTeam(context *fiber.Ctx) error{
+// 	team := models.Team{}
 
-	err := context.BodyParser(&team)
+// 	err := context.BodyParser(&team)
 
-	if err != nil{
-		log.Print("En error occured while parsing team")
-		context.Status(http.StatusUnprocessableEntity).JSON(
-			&fiber.Map{"message": "En error occured while processing request!"},
-		)
-		return err
-	}
+// 	if err != nil{
+// 		log.Print("En error occured while parsing team")
+// 		context.Status(http.StatusUnprocessableEntity).JSON(
+// 			&fiber.Map{"message": "En error occured while processing request!"},
+// 		)
+// 		return err
+// 	}
 
-	err = r.DB.Create(&team).Error
+// 	err = r.DB.Create(&team).Error
 
-	if err != nil {
-		context.Status(http.StatusBadRequest).JSON(
-			&fiber.Map{"message": "En error occured while creating team!"},)
-	}
+// 	if err != nil {
+// 		context.Status(http.StatusBadRequest).JSON(
+// 			&fiber.Map{"message": "En error occured while creating team!"},)
+// 	}
 
 
-	context.Status(http.StatusOK).JSON(
-		&fiber.Map{"team": team},
-	)
-	return nil
+// 	context.Status(http.StatusOK).JSON(
+// 		&fiber.Map{"team": team},
+// 	)
+// 	return nil
 
-}
+// }
 
-func (r *Repository) GetTeamByTeamName(context *fiber.Ctx) error{
-	teamName := context.Params("team_name")
-	teamModel := &models.Team{}
-	if teamName == ""{
-		context.Status(http.StatusInternalServerError).JSON(&fiber.Map{
-			"message": "TeamName can not be empty!", 
-		})
-		return nil
-	}
+// func (r *Repository) GetTeamByTeamName(context *fiber.Ctx) error{
+// 	teamName := context.Params("team_name")
+// 	teamModel := &models.Team{}
+// 	if teamName == ""{
+// 		context.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+// 			"message": "TeamName can not be empty!", 
+// 		})
+// 		return nil
+// 	}
 
-	fmt.Println("The TeamName is", teamName)
+// 	fmt.Println("The TeamName is", teamName)
 
-	err := r.DB.Where("team_name = ?", teamName).First(teamModel).Error
+// 	err := r.DB.Where("team_name = ?", teamName).First(teamModel).Error
 
-	if err != nil {
-		context.Status(http.StatusBadRequest).JSON(
-			&fiber.Map{"message": "En error occured while geting a team!"},)
-			return err
-	}
+// 	if err != nil {
+// 		context.Status(http.StatusBadRequest).JSON(
+// 			&fiber.Map{"message": "En error occured while geting a team!"},)
+// 			return err
+// 	}
 
-	context.Status(http.StatusOK).JSON(
-		&fiber.Map{"team_name": teamName, "members": teamModel},
-	)
-	return nil
-}
+// 	context.Status(http.StatusOK).JSON(
+// 		&fiber.Map{"team_name": teamName, "members": teamModel},
+// 	)
+// 	return nil
+// }
 
 
 func main(){
@@ -116,14 +112,13 @@ func main(){
 		SSLMode: os.Getenv("DB_SSLMODE"),
 	}
 
-	db, err := database.NewConnection(config)
+	err = database.NewConnection(config)
 
 	if err != nil {
 		log.Fatal("Error while loading the database!")
 	}
 
 	err = database.Migrate(
-		db, 
 		&dal.PullRequest{},
 		&dal.TeamMember{},
 		&dal.Team{},

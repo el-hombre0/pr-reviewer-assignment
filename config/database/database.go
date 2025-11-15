@@ -18,7 +18,7 @@ type Config struct {
 
 var DB *gorm.DB
 
-func NewConnection(config *Config)(*gorm.DB, error){
+func NewConnection(config *Config)(error){
 	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		config.Host, config.Port, config.User, config.Password, config.DBName, config.SSLMode,
@@ -27,10 +27,10 @@ func NewConnection(config *Config)(*gorm.DB, error){
 	
 	if err != nil {
 		log.Fatal("An error occured while establishing a connection with the database!")
-		return db, err
+		return  err
 	}
 	DB = db
-	return db, nil
+	return nil
 }
 
 func Migrate(tables ...interface{}) error{
