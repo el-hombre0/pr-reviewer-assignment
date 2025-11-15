@@ -9,4 +9,7 @@ func UsersRoutes(app fiber.Router){
 	usersApi := app.Group("/users")
 	usersApi.Post("/setIsActive", services.SetUserIsActive)
 	usersApi.Get("/getReview", services.GetUserReview)
+
+	// Для тестирования
+	usersApi.Post("/create", services.CreateUser)
 }

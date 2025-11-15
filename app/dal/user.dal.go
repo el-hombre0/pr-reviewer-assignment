@@ -5,12 +5,13 @@ import (
 	"gorm.io/gorm"
 )
 
-type Team struct {
+type User struct {
+	UserID string		`json:"user_id"`
+	Username string		`json:"username"`
 	TeamName string 	`json:"team_name"`
-	Members []TeamMember `gorm:"type:text" json:"members"`
+	IsActive bool		`json:"is_active"`
 }
 
-func CreateTeam(team *Team) *gorm.DB {
+func CreateUser(team *User) *gorm.DB {
 	return database.DB.Create(team)
 }
-

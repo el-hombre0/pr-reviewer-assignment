@@ -17,7 +17,6 @@ const (
 	PullRequestStatusMerged	PullRequestStatus = "MERGED"
 )
 
-// PullRequest основная модель Pull Request
 type PullRequest struct {
 	PullRequestID     string              	`json:"pull_request_id"`
 	PullRequestName   string              	`json:"pull_request_name"`

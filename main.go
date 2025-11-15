@@ -122,7 +122,7 @@ func main(){
 		&dal.PullRequest{},
 		&dal.TeamMember{},
 		&dal.Team{},
-		&dal.Users{},
+		&dal.User{},
 	)
 
 	if err != nil {
