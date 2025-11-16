@@ -12,3 +12,10 @@ row JSON body:
 	"team_name": "backend",
 	"is_active": true
 }
+
+Реализованы эндпоинты:
+pullRequest/create
+pullRequest/merge
+team/add
+team/get
+users/setIsActive
