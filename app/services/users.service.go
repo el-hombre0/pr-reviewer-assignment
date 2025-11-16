@@ -8,7 +8,44 @@ import (
 )
 
 func SetUserIsActive(c *fiber.Ctx) error {
-	return nil
+	b := new(types.SetUserActiveDTO)
+
+	if err := utils.ParseBody(c, b); err != nil {
+		return err
+	}
+	userID := b.UserID
+
+	if userID == "" {
+		return fiber.NewError(fiber.StatusUnprocessableEntity, "Invalid user id")
+	}
+
+
+	d := &dal.User{}
+
+	if err := dal.FindUserByID(d, userID).Error; err != nil {
+		return fiber.NewError(fiber.StatusUnprocessableEntity, "User not found")
+	}
+
+	newUser := &dal.User{
+		UserID: d.UserID,
+		Username: d.Username,
+		TeamName: d.TeamName,
+		IsActive: b.IsActive,
+	}
+
+	err := dal.UpdateUser(userID, newUser).Error
+
+	if err != nil {
+		return fiber.NewError(fiber.StatusConflict, err.Error())
+	}
+	
+	return c.JSON(&types.UserResponse{
+		UserID: newUser.UserID,
+		Username: newUser.Username,
+		TeamName: newUser.TeamName,
+		IsActive: newUser.IsActive,
+	})
+
 }
 
 func GetUserReview(c *fiber.Ctx) error {

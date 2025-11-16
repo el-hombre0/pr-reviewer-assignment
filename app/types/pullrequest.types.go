@@ -20,15 +20,15 @@ type PullRequestCreateResponse struct {
 	PullRequest *PullRequestResponse `json:"pr"`
 }
 
-type MergeDTO struct {
-
+type PullRequstMergeDTO struct {
+	PullRequestID string `json:"pull_request_id"`
 }
 
 type PullRequestMergeResponse struct {
-
+	PullRequest *PullRequestResponse `json:"pr"`
 }
 
-type ReassignDTO struct {
+type PullRequestReassignDTO struct {
 
 }
 

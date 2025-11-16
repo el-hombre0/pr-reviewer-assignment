@@ -120,9 +120,9 @@ func main(){
 
 	err = database.Migrate(
 		&dal.PullRequest{},
-		&dal.TeamMember{},
 		&dal.Team{},
 		&dal.User{},
+		&dal.TeamMember{},
 	)
 
 	if err != nil {

@@ -19,3 +19,8 @@ type CreateUserDTO struct {
 type UserCreateResponse struct {
 	User *UserResponse `json:"user"`
 }
+
+type SetUserActiveDTO struct {
+	UserID string		`json:"user_id"`
+	IsActive bool		`json:"is_active"`
+}

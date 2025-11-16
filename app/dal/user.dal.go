@@ -15,3 +15,15 @@ type User struct {
 func CreateUser(team *User) *gorm.DB {
 	return database.DB.Create(team)
 }
+
+func FindUser(dest interface{}, conds ...interface{}) *gorm.DB {
+	return database.DB.Model(&User{}).Take(dest, conds...)
+}
+
+func FindUserByID(dest interface{}, userID interface{}) *gorm.DB {
+	return FindUser(dest, "user_id = ?", userID)
+}
+
+func UpdateUser(userIden interface{}, data interface{}) *gorm.DB {
+	return database.DB.Model(&User{}).Where("user_id = ?", userIden).Updates(data)
+}

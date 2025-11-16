@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # Go приложение
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - DB_HOST=localhost
+  #     - DB_PORT=15432
+  #     - DB_USER=postgres
+  #     - DB_PASSWORD=password
+  #     - DB_DBNAME=pr_review_db
+  #     - DB_SSLMODE=disable
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ./:/app
+  #   restart: always
+  #   networks:
+  #     - mynet
+
+  # База данных PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    healthcheck:
+      test: "exit 0"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=pr_review_db
+    ports:
+      - "15432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks: 
+      - mynet
+
+volumes:
+  postgres_data:
+
+networks:
+  mynet:
+    name: mynet-network
+    driver: bridge

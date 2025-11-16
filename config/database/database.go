@@ -3,8 +3,9 @@ package database
 import (
 	"fmt"
 	"log"
-	"gorm.io/gorm"
+
 	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type Config struct {

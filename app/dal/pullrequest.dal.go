@@ -31,11 +31,19 @@ func CreatePullRequest(pr *PullRequest) *gorm.DB{
 	return database.DB.Create(pr)
 }
 
+// Поиск PullRequest, соответствующего заданным условиям
+func FindPullRequest(dest interface{}, conds ...interface{}) *gorm.DB{
+	return database.DB.Model(&PullRequest{}).Take(dest, conds)
+}
 
-// func MergePullRequest(pr *PullRequest) *gorm.DB{
-// 	return database.DB.Merge(pr)
+// func FindPullRequestByUser(dest interface{}, prIden interface{}, userIden interface{}) *gorm.DB{
+// 	return FindPullRequest(dest, "pull_request_id = ? and ")
 // }
 
-// func ReassignPullRequest(pr *PullRequest) *gorm.DB{
-// 	return database.DB.Reassign(pr)
-// }
+func FindPullRequestByID(dest interface{}, prIden interface{}) *gorm.DB {
+	return FindPullRequest(dest, "pull_request_id = ?", prIden)
+}
+
+func UpdatePullRequest(prIden interface{}, data interface{}) *gorm.DB {
+	return database.DB.Model(&User{}).Where("pull_request_id = ?", prIden).Updates(data)
+}

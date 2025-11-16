@@ -8,5 +8,5 @@ import (
 func TeamRoutes(app fiber.Router){
 	teamApi := app.Group("/team")
 	teamApi.Post("/add", services.CreateTeam)
-	teamApi.Get("/get", services.GetTeamByName)
+	teamApi.Get("/get/:teamName", services.GetTeamByName)
 }
