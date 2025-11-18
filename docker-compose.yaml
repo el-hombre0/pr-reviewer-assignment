@@ -15,8 +15,10 @@ services:
       - DB_PASSWORD=password
       - DB_DBNAME=pr_review_db
       - DB_SSLMODE=disable
-    depends_on: 
-      - db
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
     networks:
       - mynet
 
@@ -32,6 +34,8 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: "exit 0"
     networks: 
       - mynet
 
