@@ -1,10 +1,12 @@
-FROM golang:1.22.2-alpine
-RUN apk update && apk upgrade && \
-    apk add --no-cache bash git openssh
-LABEL maintainer="Efimtsev Stanislav <evendot@yandex.ru>"
+FROM golang:1.22 AS builder
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix nocgo -o myapp .
+
+FROM alpine:latest
+WORKDIR /app
+COPY --from=builder /app/myapp /app/.env ./
 EXPOSE 8080
-CMD ["go", "run", "main.go"]
+CMD ["./myapp"]
